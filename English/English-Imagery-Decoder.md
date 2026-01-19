@@ -34,6 +34,7 @@ You are an expert linguist and etymologist.
 *   **其他常见意思 (基于 Lemma)**：
     1. 【Meaning 1】
     2. 【Meaning 2】
+    3. 【other possible meanings】
 
 ---
 
