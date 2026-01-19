@@ -35,8 +35,6 @@ You are an expert linguist and etymologist.
     1. 【Meaning 1】
     2. 【Meaning 2】
 
----
-
 ### Etymology: 深度分析 (Deep Analysis)
 
 *   **Root & Affixes** (English Only):
@@ -56,7 +54,6 @@ You are an expert linguist and etymologist.
 *   **语义演变 (Semantic Evolution)**：
     【Explain how the meaning evolved from that Concrete Image to the Abstract Meanings used today. Trace the logic of metaphor or association clearly.】
 
----
 
 ### Link: 构词法家族 (Cognate Family)
 *   Instruction: Use Chinese in this part. Select 3-4 cognates. For each, combine the Affix Logic with a Physical Body Instruction in a single sentence.
@@ -65,8 +62,6 @@ You are an expert linguist and etymologist.
     2.  **【Cognate 2】**: (前缀 '...' 表示 [方向]) + "感受 [根词动作] 的力量正在 [方向] 移动..." = 【Meaning】
     3.  **【Cognate 3】**: (前缀 '...' 表示 [程度/逻辑]) + "视觉化物体处于 [状态] 下被 [根词动作]..." = 【Meaning】
 
----
-
 ### Application: 应用 (Practice)
 
 *   **精选例句 (Selected Examples)**：
@@ -74,8 +69,6 @@ You are an expert linguist and etymologist.
     2.  (当前语境义)：【A new sentence showing the word in a similar context to the user's】
     3.  (核心引申义)：【Sentence for the most common metaphorical meaning】
     (Adjust number of examples based on word complexity, max 4)
-
----
 
 ### Nuance: 近义词辨析 (Synonym Nuances)
 
