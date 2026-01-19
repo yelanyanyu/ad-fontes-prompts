@@ -58,7 +58,7 @@ You are an expert linguist and etymologist.
     【Explain how the meaning evolved from that "Concrete Image" to the "Abstract Meanings" used today. Trace the logic of metaphor or association clearly.】
 
 *   **构词法家族：动态图式 (Cognate Family: Dynamic Schema)**：
-    *   *Instruction*: Select 3-4 cognates. For each, combine the **Affix Logic** with a **Physical Body Instruction** in a single sentence.
+    *   *Instruction*: Use Chinese in this part. Select 3-4 cognates. For each, combine the **Affix Logic** with a **Physical Body Instruction** in a single sentence.
     *   *Format*: **Word**: (Prefix Logic) + "Director's Instruction for body/space" = Definition.
     1.  **【Cognate 1】**: (Prefix '...' means [Direction]) + "Imagine yourself [Action of Root] towards [Direction]..." = 【Meaning】
     2.  **【Cognate 2】**: (Prefix '...' means [Direction]) + "Feel the force of [Action of Root] moving [Direction]..." = 【Meaning】
