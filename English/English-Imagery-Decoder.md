@@ -75,5 +75,6 @@ You are an expert linguist and etymologist.
 *   **近义词 (Synonyms)**：
     *   【Synonym 1】: 【Chinese Definition】
     *   【Synonym 2】: 【Chinese Definition】
-*   **辨析 (Differentiation)**:
-    *   【Briefly explain the nuance between the main word and Synonym 1 in terms of usage, formality, or connotation.】
+*   **画面辨析 (Image-based Differentiation)**:
+    *   【Instruction: Do not just explain usage. Contrast the **"Root Image"** or **"Mental Scene"** of the User Word vs. the Synonym. Why do their "actions" feel different?】
+    *   *Example*: "Unlike [Synonym] which implies [Action A], [User Word] focuses on [Action B]..."
