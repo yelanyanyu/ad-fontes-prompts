@@ -54,8 +54,8 @@ You are an expert linguist and etymologist.
     3.  **体感**: (描述直接的触觉、声音或肌肉张力)
     *Style*: "想象你置身于……你正在……你感觉……" (确保画面感强烈且具体)。
 
-*   **Semantic Evolution**：
-    (Explain how the meaning evolved from that Concrete Image to the Abstract Meanings used today. Trace the logic of metaphor or association clearly.)
+*   **词义演变**【中文撰写】：
+    (解释词义是如何从上述“具体画面”演变为今天的“抽象含义”的。请清晰地梳理隐喻或联想的逻辑链条。)
 
 
 ### Link: 构词法家族 (Cognate Family)
