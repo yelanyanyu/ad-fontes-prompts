@@ -19,7 +19,7 @@
 
 ## 核心理念
 
-> 💡 想了解更多背后的思考？请阅读详细的 [理念阐述](docs/PHILOSOPHY.md)。
+> 💡 想了解更多背后的思考？请阅读详细的 [理念阐述](docs/Principle_Explanation.md)。
 
 ### 当记“Hammer”时，我们在记什么？
 
