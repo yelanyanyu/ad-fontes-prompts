@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML to Etymology Card Generator</title>
+    <!-- Tailwind CSS for the App UI (Not the card itself, to keep card portable) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JS-YAML Library for parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* App UI Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0; 
+        }
+        
+        .editor-font {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col text-slate-800 font-sans">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-book-journal-whills text-2xl text-amber-400"></i>
+            <div>
+                <h1 class="text-xl font-bold font-serif tracking-wide">Etymos <span class="text-amber-400">CardGen</span></h1>
+                <p class="text-xs text-slate-400">YAML to Semantic HTML Converter</p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+             <button onclick="loadExample()" class="text-sm bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded transition">
+                <i class="fa-solid fa-rotate-right mr-1"></i> 加载示例
+            </button>
+            <button onclick="copyToClipboard()" id="copyBtn" class="text-sm bg-amber-600 hover:bg-amber-500 text-white px-4 py-1.5 rounded font-bold transition shadow-lg flex items-center gap-2">
+                <i class="fa-solid fa-copy"></i> <span id="copyText">复制 HTML 代码</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        
+        <!-- Input Section -->
+        <div class="w-full md:w-1/3 flex flex-col border-r border-gray-300 bg-white">
+            <div class="p-2 bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider flex justify-between">
+                <span>YAML Input</span>
+                <span id="status" class="text-green-600 hidden"><i class="fa-solid fa-check"></i> Valid</span>
+            </div>
+            <textarea id="yamlInput" class="flex-1 w-full p-4 resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/50 editor-font text-gray-700" placeholder="Paste your YAML here..." spellcheck="false"></textarea>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="w-full md:w-2/3 bg-gray-200 overflow-y-auto p-4 md:p-8 flex justify-center">
+            <!-- This container holds the rendered card -->
+            <div id="previewContainer" class="w-full max-w-2xl transition-all duration-300">
+                <!-- Content will be injected here -->
+                <div class="bg-white p-10 rounded-lg shadow-xl text-center text-gray-400">
+                    <i class="fa-solid fa-arrow-left text-4xl mb-4 opacity-20"></i>
+                    <p>Please enter valid YAML on the left to generate the card.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const yamlInput = document.getElementById('yamlInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const statusSpan = document.getElementById('status');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyText = document.getElementById('copyText');
+
+        // Initial Data (The example provided in prompt)
+        const exampleYaml = `yield:
+  user_word: "bolstered"
+  lemma: "bolster"
+  syllabification: "bol-ster"
+  user_context_sentence: "Neighborhoods with a large elderly population could be bolstered with cooling centers."
+  part_of_speech: "Verb (Past Participle)"
+  contextual_meaning:
+    en: "To support, strengthen, or prop up; specifically, to reinforce something weak or needing help by adding resources."
+    zh: "支持，加强；特指通过增加资源或外力来支撑某种脆弱的状况（如同垫上厚垫子一样）。"
+  other_common_meanings:
+    - "Noun: A long, thick pillow placed under other pillows for support."
+    - "Verb: To boost or improve something intangible (e.g., confidence, morale)."
+
+etymology:
+  root_and_affixes:
+    prefix: "N/A"
+    root: "PIE *bhel- (to blow, swell)"
+    suffix: "-ster (instrument suffix)"
+    structure_analysis: "Combines 'swelling' (*bhel-) with an instrumental suffix. A 'bolster' is literally 'a thing that is swollen/stuffed'."
+  historical_origins:
+    history_myth: "N/A"
+    source_word: "Old English 'bolster' (cushion)"
+    pie_root: "*bhel- (to blow, to swell)"
+  
+  visual_imagery_zh: |
+    1. 场景: 想象你面前有一个倾斜、摇摇欲坠的物体（比如一个松动的书架或疲惫的人）。
+    2. 动作: 你拿来一个填充得非常饱满、圆鼓鼓的长枕头（Bolster），用力塞在这个物体的下方或背面。
+    3. 体感: 随着枕头被挤压，你感觉到一种柔软但坚实的“回弹力”。
+
+  meaning_evolution_zh: |
+    从“具体的画面”到“抽象含义”的演变：
+    最初，"Bolster" 仅仅指那个“填充得鼓鼓囊囊的长枕头”。
+    逻辑链条：用枕头垫高/支撑 -> 给予物理上的支撑 -> 引申为“给予某种脆弱事物额外的支持或加强”。
+
+cognate_family:
+  instruction: "同源词：PIE *bhel- (膨胀/吹气)。"
+  cognates:
+    - word: "Ball"
+      logic: "直接继承 *bhel- -> 膨胀成圆球状 -> 球。"
+    - word: "Balloon"
+      logic: "*bhel- -> 被吹大、鼓起来的物体 -> 气球。"
+    - word: "Bowl"
+      logic: "*bhel- -> 向外‘鼓出’形成的空间 -> 碗。"
+
+application:
+  selected_examples:
+    - type: "Literal / Root Image"
+      sentence: "She propped herself up on the bolster to read in bed."
+      translation_zh: "她靠在那个长枕头上，在床上读书。"
+    - type: "Current Context"
+      sentence: "The city's defenses were bolstered by the arrival of fresh troops."
+      translation_zh: "随着生力军的到来，城市的防御得到了加强。"
+    - type: "Abstract / Metaphorical"
+      sentence: "Good feedback bolstered his confidence."
+      translation_zh: "积极的反馈增强了他的信心。"
+
+nuance:
+  synonyms:
+    - word: "Support"
+      meaning_zh: "支持（最通用，侧重托举）"
+    - word: "Reinforce"
+      meaning_zh: "加固（侧重增加材料使结构更强）"
+  
+  image_differentiation_zh: |
+    对比 "Support" 和 "Bolster"：
+    "Support" 只是单纯的“托举”（静态）。
+    "Bolster" 带有更强的“补救”意味，暗示原有的结构可能脆弱，需要塞入一个“缓冲物”来支撑。`;
+
+        // Load Example
+        function loadExample() {
+            yamlInput.value = exampleYaml;
+            renderHtml();
+        }
+
+        // Render Logic
+        function renderHtml() {
+            const val = yamlInput.value;
+            try {
+                const data = jsyaml.load(val);
+                if (!data || !data.yield) {
+                    throw new Error("Missing 'yield' key");
+                }
+                const html = generateCardHTML(data);
+                previewContainer.innerHTML = html;
+                statusSpan.classList.remove('hidden');
+                statusSpan.innerHTML = '<i class="fa-solid fa-check"></i> Valid YAML';
+                statusSpan.className = 'text-green-600 text-xs font-bold uppercase tracking-wider';
+            } catch (e) {
+                statusSpan.classList.remove('hidden');
+                statusSpan.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Error';
+                statusSpan.className = 'text-red-500 text-xs font-bold uppercase tracking-wider';
+                // Don't clear preview immediately so user can fix typo
+                console.error(e);
+            }
+        }
+
+        // Generator Function: Returns a string of HTML with Inline Styles
+        // Note: Inline styles are used to ensure the card looks good when pasted into Anki/Obsidian
+        // without needing external CSS files.
+        function generateCardHTML(data) {
+            
+            // Colors
+            const c = {
+                bg: "#fcfbf9",
+                cardBg: "#ffffff",
+                textMain: "#2d3748",
+                textSub: "#718096",
+                accent: "#b7791f", // Bronze/Gold
+                accentLight: "#faf5ff",
+                border: "#e2e8f0",
+                sectionHeader: "#2c5282" // Deep Blue
+            };
+
+            const styles = {
+                card: `font-family: 'Noto Sans SC', sans-serif; max-width: 650px; margin: 0 auto; background-color: ${c.bg}; color: ${c.textMain}; border: 1px solid ${c.border}; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);`,
+                section: `padding: 20px; border-bottom: 1px solid ${c.border};`,
+                h1: `font-family: 'Noto Serif SC', serif; font-size: 32px; font-weight: 700; color: ${c.sectionHeader}; margin: 0; line-height: 1.2;`,
+                h2: `font-family: 'Noto Serif SC', serif; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: ${c.accent}; margin-bottom: 12px; border-left: 4px solid ${c.accent}; padding-left: 10px;`,
+                // New H3 style for prominent subsections
+                h3: `font-family: 'Noto Serif SC', serif; font-size: 14px; font-weight: 700; color: ${c.sectionHeader}; margin-top: 18px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 2px solid ${c.border}; display: block;`,
+                sub: `font-size: 14px; color: ${c.textSub}; margin-bottom: 8px;`,
+                p: `font-size: 15px; line-height: 1.6; margin: 0 0 8px 0;`,
+                tag: `display: inline-block; background: ${c.accentLight}; color: ${c.sectionHeader}; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-right: 5px; border: 1px solid #e2e8f0;`,
+                box: `background: #edf2f7; padding: 12px; border-radius: 6px; font-size: 14px; border-left: 4px solid ${c.sectionHeader}; margin-top: 10px;`,
+                mythBox: `background: #fff5f5; padding: 12px; border-radius: 6px; font-size: 14px; border-left: 4px solid #e53e3e; margin-top: 10px; color: #742a2a;`,
+                // Unified style for Imagery and Evolution: Cream box + Lora font + Dashed border
+                textBlock: `background: #fffaf0; padding: 15px; border-radius: 6px; border: 1px dashed ${c.accent}; color: #2d3748; font-family: 'Lora', serif; white-space: pre-line; line-height: 1.6;`,
+                flex: `display: flex; gap: 10px; flex-wrap: wrap;`,
+                grid: `display: grid; grid-template-columns: 1fr; gap: 10px;`
+            };
+
+            // Helper for safely accessing nested data
+            const get = (path, def = "") => {
+                return path.split('.').reduce((acc, part) => acc && acc[part], data) || def;
+            };
+
+            // Process newlines in block scalars to <br> or keep pre-line
+            const formatText = (text) => text ? text.trim() : "";
+
+            // --- 1. YIELD ---
+            const yieldHtml = `
+            <div style="${styles.section} background: white;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div style="${styles.sub}">${get('yield.syllabification')} • ${get('yield.part_of_speech')}</div>
+                        <h1 style="${styles.h1}">${get('yield.lemma')}</h1>
+                        <div style="font-size: 14px; color: #a0aec0; margin-top: 4px;">User context: "${get('yield.user_word')}"</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 4px;">${get('yield.contextual_meaning.en')}</div>
+                    <div style="font-size: 16px; color: #4a5568;">${get('yield.contextual_meaning.zh')}</div>
+                </div>
+                 ${get('yield.other_common_meanings', []).length > 0 ? `
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed ${c.border}; font-size: 13px; color: ${c.textSub};">
+                    <strong>Also:</strong> ${get('yield.other_common_meanings').join(' • ')}
+                </div>` : ''}
+            </div>`;
+
+            // --- 2. ETYMOLOGY ---
+            const etymData = data.etymology || {};
+            const roots = etymData.root_and_affixes || {};
+            const historyMyth = etymData.historical_origins?.history_myth;
+
+            const etymHtml = `
+            <div style="${styles.section}">
+                <h2 style="${styles.h2}">Etymology: Deep Analysis</h2>
+                
+                <!-- Structure -->
+                <div style="display:flex; gap: 5px; margin-bottom: 15px; font-family: monospace; font-size: 13px;">
+                    ${roots.prefix && roots.prefix !== 'N/A' ? `<span style="${styles.tag}">PRE: ${roots.prefix}</span>` : ''}
+                    <span style="${styles.tag} background: #ebf8ff; color: #2b6cb0;">ROOT: ${roots.root}</span>
+                    ${roots.suffix && roots.suffix !== 'N/A' ? `<span style="${styles.tag}">SUF: ${roots.suffix}</span>` : ''}
+                </div>
+                <p style="${styles.p} font-size: 14px;"><strong>Structure:</strong> ${roots.structure_analysis || ''}</p>
+                <p style="${styles.p} font-size: 14px;"><strong>Source:</strong> ${etymData.historical_origins?.source_word || ''} <span style="color:${c.accent}">(${etymData.historical_origins?.pie_root || ''})</span></p>
+                
+                <!-- Myth/History Section (New) -->
+                ${historyMyth && historyMyth !== 'N/A' ? `
+                <div style="${styles.mythBox}">
+                    <strong><i class="fa-solid fa-scroll" style="margin-right:5px;"></i>History & Myth:</strong> ${historyMyth}
+                </div>` : ''}
+
+                <!-- Visual Imagery (Consistent Style) -->
+                <div style="margin-top: 15px;">
+                    <div style="${styles.h3}">Visual Imagery (Mental Movie)</div>
+                    <div style="${styles.textBlock}">
+                        ${formatText(etymData.visual_imagery_zh)}
+                    </div>
+                </div>
+
+                <!-- Evolution (Consistent Style) -->
+                 <div style="margin-top: 15px;">
+                    <div style="${styles.h3}">Meaning Evolution</div>
+                    <div style="${styles.textBlock}">
+                        ${formatText(etymData.meaning_evolution_zh)}
+                    </div>
+                </div>
+            </div>`;
+
+            // --- 3. COGNATE FAMILY ---
+            const cognates = get('cognate_family.cognates', []);
+            const linkHtml = `
+            <div style="${styles.section} background: #fffdfa;">
+                <h2 style="${styles.h2}">Link: Cognate Family</h2>
+                <p style="font-size:13px; color: ${c.textSub}; margin-bottom: 10px;">${get('cognate_family.instruction')}</p>
+                <div style="${styles.grid}">
+                    ${cognates.map(cog => `
+                        <div style="background: white; border: 1px solid ${c.border}; padding: 10px; border-radius: 6px;">
+                            <span style="font-weight: 700; color: ${c.sectionHeader}; font-size: 15px;">${cog.word}</span>
+                            <div style="font-size: 13px; color: #4a5568; margin-top: 4px; border-top: 1px solid #f7fafc; padding-top: 4px;">${cog.logic}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+
+            // --- 4. APPLICATION ---
+            const examples = get('application.selected_examples', []);
+            const appHtml = `
+            <div style="${styles.section}">
+                <h2 style="${styles.h2}">Application: Practice</h2>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    ${examples.map(ex => `
+                        <div style="border-left: 3px solid #cbd5e0; padding-left: 12px;">
+                            <div style="font-size: 11px; font-weight: bold; color: ${c.accent}; text-transform: uppercase; margin-bottom: 2px;">${ex.type}</div>
+                            <div style="font-family: 'Lora', serif; font-size: 15px; color: #1a202c; margin-bottom: 2px;">${ex.sentence}</div>
+                            <div style="font-size: 13px; color: #718096;">${ex.translation_zh}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+
+            // --- 5. NUANCE ---
+            const synonyms = get('nuance.synonyms', []);
+            const nuanceHtml = `
+            <div style="${styles.section} border-bottom: none;">
+                <h2 style="${styles.h2}">Nuance: Synonyms</h2>
+                <ul style="list-style: none; padding: 0; margin: 0 0 15px 0;">
+                    ${synonyms.map(syn => `
+                        <li style="margin-bottom: 6px; font-size: 14px;">
+                            <span style="font-weight: 700; color: ${c.textMain};">${syn.word}</span>: 
+                            <span style="color: #4a5568;">${syn.meaning_zh}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+                <div style="${styles.box}">
+                    <strong style="display:block; margin-bottom: 6px; font-size: 13px; color: ${c.sectionHeader};">Image Differentiation:</strong>
+                    <div style="white-space: pre-line; line-height: 1.6;">${formatText(get('nuance.image_differentiation_zh'))}</div>
+                </div>
+            </div>`;
+
+            return `<div style="${styles.card}">
+                ${yieldHtml}
+                ${etymHtml}
+                ${linkHtml}
+                ${appHtml}
+                ${nuanceHtml}
+            </div>`;
+        }
+
+        // Copy Function
+        async function copyToClipboard() {
+            const htmlContent = previewContainer.innerHTML;
+            
+            try {
+                // We copy the HTML source code so it can be pasted into Anki's HTML editor
+                await navigator.clipboard.writeText(htmlContent);
+                
+                // Feedback UI
+                const originalText = copyText.innerHTML;
+                const originalBg = copyBtn.className;
+                
+                copyText.innerText = "Copied Code!";
+                copyBtn.classList.remove('bg-amber-600', 'hover:bg-amber-500');
+                copyBtn.classList.add('bg-green-600', 'hover:bg-green-500');
+                
+                setTimeout(() => {
+                    copyText.innerHTML = originalText;
+                    copyBtn.className = originalBg;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert("Failed to copy to clipboard");
+            }
+        }
+
+        // Event Listeners
+        yamlInput.addEventListener('input', renderHtml);
+        
+        // Initialize
+        loadExample();
+
+    </script>
+</body>
+</html>
