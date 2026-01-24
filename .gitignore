@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+.trae/
+
+# Project Specific
+tool/yaml2pg/node/node_modules/
+tool/yaml2pg/.env
