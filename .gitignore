@@ -1,7 +1,11 @@
 # Node.js
 node_modules/
+logs/
+*.log
 npm-debug.log
 yarn-error.log
+pnpm-debug.log*
+lerna-debug.log*
 
 # Python
 __pycache__/
@@ -10,12 +14,25 @@ __pycache__/
 venv/
 .env
 .env.local
+*.local
 
 # IDE
 .vscode/
 .idea/
 .trae/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Project Specific
 tool/yaml2pg/node/node_modules/
 tool/yaml2pg/.env
+tool/yaml2pg/web/node_modules/
+tool/yaml2pg/web/client/node_modules/
+tool/yaml2pg/web/dist/
+tool/yaml2pg/web/dist-ssr/
+tool/yaml2pg/web/config.json
+tool/yaml2pg/web/data/local_words.json

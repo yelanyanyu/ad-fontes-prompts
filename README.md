@@ -44,8 +44,13 @@
     *   **双模运行**：没网也能用！支持**离线暂存** (Local Storage)，联网后一键同步到数据库。
     *   **高级管理**：支持模糊搜索、多维排序、分页浏览。
     *   **智能同步**：自动检测数据冲突，提供 Diff 对比界面，确保数据不丢失。
-*   **用法**：**双击脚本**启动服务 (http://localhost:3000)。
-    *   *注：需要本地安装 PostgreSQL。*
+*   **用法**：
+    *   开发模式（推荐）：双击 [start_tool_yml2pg.bat](file:///d:/myCode/formal-projects/ad-fontes-prompts/start_tool_yml2pg.bat)（自动安装依赖，启动 API+前端）
+        *   前端：http://localhost:5173
+        *   API：http://localhost:3000/api
+    *   生产模式：`start_tool_yml2pg.bat prod`（先 build 再以 production 启动，http://localhost:3000）
+    *   停止：双击 [stop_tool_yml2pg.bat](file:///d:/myCode/formal-projects/ad-fontes-prompts/stop_tool_yml2pg.bat)
+    *   *注：PostgreSQL 为可选项；离线模式不需要数据库，联网后可同步。*
 
 ### 4. 集成 Skills (The Creators)
 为了让生成的内容更好用，我们还集成了一些 Agent Skills：
@@ -70,3 +75,109 @@
 
 ---
 *联系我：yelanyanyu@outlook.com*
+
+```
+ad-fontes-prompts
+├─ docs
+│  └─ Principle_Explanation.md
+├─ English
+│  ├─ phrase-en2cn-md.md
+│  ├─ word-en2cn-md.md
+│  └─ word-en2cn-yaml.md
+├─ German
+│  └─ word-de2en-md.md
+├─ LICENSE
+├─ practice
+│  ├─ phrase_en.md
+│  └─ word_en.md
+├─ README.md
+├─ start_tool_yml2pg.bat
+├─ stop_tool_yml2pg.bat
+└─ tool
+   ├─ yaml2pg
+   │  ├─ CHANGELOG.md
+   │  ├─ DEVELOPMENT.md
+   │  ├─ init_db.js
+   │  ├─ migration_v2.sql
+   │  ├─ node
+   │  │  ├─ init_db.js
+   │  │  ├─ loader.js
+   │  │  ├─ migrate_v2.js
+   │  │  ├─ package-lock.json
+   │  │  └─ package.json
+   │  ├─ python
+   │  │  ├─ loader.py
+   │  │  ├─ models.py
+   │  │  └─ requirements.txt
+   │  ├─ README.md
+   │  ├─ schema.sql
+   │  └─ web
+   │     ├─ .dockerignore
+   │     ├─ client
+   │     │  ├─ index.html
+   │     │  ├─ package-lock.json
+   │     │  ├─ package.json
+   │     │  ├─ postcss.config.js
+   │     │  ├─ public
+   │     │  │  ├─ logo.svg
+   │     │  │  └─ vite.svg
+   │     │  ├─ README.md
+   │     │  ├─ src
+   │     │  │  ├─ App.vue
+   │     │  │  ├─ assets
+   │     │  │  │  └─ main.css
+   │     │  │  ├─ components
+   │     │  │  │  ├─ Layout
+   │     │  │  │  │  ├─ Header.vue
+   │     │  │  │  │  └─ Sidebar.vue
+   │     │  │  │  ├─ ui
+   │     │  │  │  │  ├─ ConflictModal.vue
+   │     │  │  │  │  └─ ToastContainer.vue
+   │     │  │  │  ├─ WordEditor
+   │     │  │  │  │  └─ WordEditor.vue
+   │     │  │  │  ├─ WordList
+   │     │  │  │  │  └─ WordList.vue
+   │     │  │  │  └─ WordPreview
+   │     │  │  │     └─ WordPreview.vue
+   │     │  │  ├─ main.js
+   │     │  │  ├─ router
+   │     │  │  │  └─ index.js
+   │     │  │  ├─ stores
+   │     │  │  │  ├─ appStore.js
+   │     │  │  │  └─ wordStore.js
+   │     │  │  ├─ style.css
+   │     │  │  ├─ utils
+   │     │  │  │  ├─ conflict.js
+   │     │  │  │  ├─ generator.js
+   │     │  │  │  ├─ request.js
+   │     │  │  │  └─ template.js
+   │     │  │  └─ views
+   │     │  │     ├─ EditorView.vue
+   │     │  │     ├─ HomeView.vue
+   │     │  │     └─ SettingsView.vue
+   │     │  ├─ tailwind.config.js
+   │     │  └─ vite.config.js
+   │     ├─ controllers
+   │     │  └─ wordController.js
+   │     ├─ data
+   │     ├─ db
+   │     │  └─ index.js
+   │     ├─ Dockerfile
+   │     ├─ localStore.js
+   │     ├─ package-lock.json
+   │     ├─ package.json
+   │     ├─ routes
+   │     │  ├─ core.js
+   │     │  ├─ sync.js
+   │     │  └─ words.js
+   │     ├─ scripts
+   │     │  ├─ test-api-sorting.mjs
+   │     │  └─ test-list-sort.mjs
+   │     ├─ server.js
+   │     ├─ services
+   │     │  ├─ conflictService.js
+   │     │  └─ wordService.js
+   │     └─ src
+   └─ yml2html.html
+
+```
