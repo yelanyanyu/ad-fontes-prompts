@@ -56,6 +56,7 @@
 为了让生成的内容更好用，我们还集成了一些 Agent Skills：
 *   **Humanizer-zh**：觉得 AI 写得太生硬？用它润色一下，去去“机器味”。
 *   **Baoyu Skills**：想把单词解析做成小红书图片或信息图？用它一键生成提示词。
+*   **Word Extractor Agent**：从 Markdown 文章中批量提取加粗单词，使用 compromise 获取 lemma，生成 YAML，并支持 API 上传或离线暂存。
 
 ## 计划与期待
 
