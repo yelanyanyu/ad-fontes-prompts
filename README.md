@@ -16,7 +16,7 @@
 死记硬背：Discuss = 讨论。
 **Ad Fontes 的方式**：
 带你回到古罗马的农场，看人们怎么把谷物敲打（quash/cut）、摇晃，把糠皮震开（dis-），最后留下沉甸甸的果实。
-这时候你再看 Discuss，它就不再是枯燥的“开会”，而是**思想碰撞、去伪存真**的过程。
+这时候你再看 Discuss，它就不再是枯燥的"开会"，而是**思想碰撞、去伪存真**的过程。
 
 我们用 Prompt 引导 AI 做三件事：
 1.  **拆解**：把词拆回最原始的物理动作。
@@ -28,35 +28,52 @@
 除了核心的 Prompt，我们还做了一些顺手的小工具，方便你管理和查看 AI 生成的内容。
 
 ### 1. 核心 Prompts (The Soul)
-这是项目的核心，直接复制给 ChatGPT 或 Claude 用就行。
-*   **英语单词解析**：[English/word-en2cn-yaml.md](English/word-en2cn-yaml.md) (推荐)
-*   **英语词组解析**：[English/phrase-en2cn-md.md](English/phrase-en2cn-md.md)
 
-### 2. 本地查看器 (The Viewer)
-如果你喜欢清爽的阅读体验，可以用这个。
-*   **文件**：`tool/yaml2html.html`
-*   **用法**：**双击直接打开**。把 AI 生成的 YAML 格式内容粘贴进去，它会自动渲染成漂亮的网页版卡片。
+这是项目的核心，直接复制给 ChatGPT 或 Claude 用就行。
+
+**英语解析**：
+*   **英语单词解析 (YAML 格式，推荐)**：[English/word-en2cn-yaml.md](English/word-en2cn-yaml.md) - 结构化输出，适合存入数据库
+*   **英语单词解析 (Markdown 格式)**：[English/word-en2cn-md.md](English/word-en2cn-md.md) - 简洁的文本输出
+*   **英语词组解析 (Markdown 格式)**：[English/phrase-en2cn-md.md](English/phrase-en2cn-md.md) - 解析短语和习语
+*   **英语词组测试 (Agent 测试版)**：[English/phrase-en2cn-agent-test.md](English/phrase-en2cn-agent-test.md)
+
+**德语解析**（实验性）：
+*   **德语单词解析 (YAML 格式)**：[German/word-de2cn-yaml.md](German/word-de2cn-yaml.md) - 支持德语特有的可分动词、复合词分析
+*   **德语单词解析 (Markdown 格式)**：[German/word-de2en-md.md](German/word-de2en-md.md)
+
+### 2. 场景练习 Prompts (The Practice)
+
+想要检验自己的学习成果？试试这些"逆向猜词"练习：
+*   **单词猜谜**：[practice/word_en.md](practice/word_en.md) - 根据词源描述猜单词
+*   **词组猜谜**：[practice/phrase_en.md](practice/phrase_en.md) - 根据空间向量描述猜短语
+
+这些 Prompt 把 AI 生成的词源解析变成互动谜题，让你从"被动接收"转向"主动思考"。
 
 ### 3. 数据管理器 (The Manager)
-如果你想把学过的词都存起来，建立自己的语料库，用这个。这是一个全功能的 Web 应用，支持离线暂存和云端同步。
-*   **文件**：`start_tool_yml2pg.bat`
+
+如果你想把学过的词都存起来，建立自己的语料库，推荐使用 **Ad Fontes Manager** —— 一个独立的全功能 Web 应用，支持离线暂存和云端同步。
+
+*   **仓库地址**：https://github.com/yelanyanyu/ad-fontes-manager
 *   **核心功能**：
     *   **双模运行**：没网也能用！支持**离线暂存** (Local Storage)，联网后一键同步到数据库。
     *   **高级管理**：支持模糊搜索、多维排序、分页浏览。
     *   **智能同步**：自动检测数据冲突，提供 Diff 对比界面，确保数据不丢失。
-*   **用法**：
-    *   开发模式（推荐）：双击 [start_tool_yml2pg.bat](file:///d:/myCode/formal-projects/ad-fontes-prompts/start_tool_yml2pg.bat)（自动安装依赖，启动 API+前端）
-        *   前端：http://localhost:5173
-        *   API：http://localhost:3000/api
-    *   生产模式：`start_tool_yml2pg.bat prod`（先 build 再以 production 启动，http://localhost:3000）
-    *   停止：双击 [stop_tool_yml2pg.bat](file:///d:/myCode/formal-projects/ad-fontes-prompts/stop_tool_yml2pg.bat)
-    *   *注：PostgreSQL 为可选项；离线模式不需要数据库，联网后可同步。*
+    *   **NLP 智能处理**：集成 `compromise` 库，自动将变形词还原为原型（如 `running` → `run`）。
+    *   **精美卡片**：YAML 内容自动渲染成精美单词卡片，支持导出。
 
 ### 4. 集成 Skills (The Creators)
+
 为了让生成的内容更好用，我们还集成了一些 Agent Skills：
-*   **Humanizer-zh**：觉得 AI 写得太生硬？用它润色一下，去去“机器味”。
+*   **Humanizer-zh**：觉得 AI 写得太生硬？用它润色一下，去去"机器味"。
 *   **Baoyu Skills**：想把单词解析做成小红书图片或信息图？用它一键生成提示词。
 *   **Word Extractor Agent**：从 Markdown 文章中批量提取加粗单词，使用 compromise 获取 lemma，生成 YAML，并支持 API 上传或离线暂存。
+
+## 文档导航
+
+| 文档 | 说明 |
+|------|------|
+| [docs/Principle_Explanation.md](docs/Principle_Explanation.md) | 项目背后的语言学理念与方法论 |
+| [.github/CHANGELOG.md](.github/CHANGELOG.md) | 版本更新日志 |
 
 ## 计划与期待
 
@@ -64,8 +81,10 @@
 - [x] **核心提示词**：英语词组/习语解析
 - [x] **工具链**：YAML 查看器 (HTML) & 管理器 (Node.js/PG)
 - [x] **Skills**：写作润色与配图生成
-- [ ] **多语言**：德语解析正在路上了
-- [ ] **场景训练**：不给词选词，而是给场景填词
+- [x] **多语言**：德语解析（实验性支持）
+- [x] **场景训练**：不给词选词，而是给场景填词（逆向猜词练习）
+- [ ] **更多语言**：法语、西班牙语等
+- [ ] **移动端适配**：更友好的手机端体验
 
 ## 贡献与协议
 
